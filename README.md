@@ -34,6 +34,10 @@ Usage
 
 
 
+License
+-------------------------------------------------------------------------------
+© 2013 Tabunoki
 
+Distributed under the MIT License.
 
 
