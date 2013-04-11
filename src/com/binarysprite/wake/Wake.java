@@ -29,13 +29,13 @@ public class Wake {
 	/**
 	 * インプットディレクトリです。
 	 */
-	@Option(name="-i", usage="input directory", metaVar="INPUT")
+	@Option(name="-i", usage="input directory", metaVar="INPUT", required=true)
     private File input = new File("./");
 	
 	/**
 	 * アウトプットディレクトリです。
 	 */
-	@Option(name="-o", usage="output directory", metaVar="OUTPUT")
+	@Option(name="-o", usage="output directory", metaVar="OUTPUT", required=true)
     private File output = new File("./");
 
 	/**
