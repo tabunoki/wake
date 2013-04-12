@@ -108,7 +108,7 @@ public enum WebBuilder implements FileFilter {
 			 */
 			MarkdownProcessor processor = new MarkdownProcessor();
 			
-			String[] fileNameElement = param.outputFile.getName().split("[@|.]");
+			String[] fileNameElement = param.inputFile.getName().split("[@|.]");
 			if (fileNameElement.length == 3) {
 				/*
 				 * テンプレート指定がある場合は markdown してからバインドする
@@ -244,6 +244,10 @@ public enum WebBuilder implements FileFilter {
 		}
 	};
 	
+	/**
+	 * テンプレートマップです。
+	 * テンプレート名をキーにし、テンプレートの内容を値として持ちます。
+	 */
 	private static final Map<String, String> TEMPALTE_MAP = new HashMap<String, String>();
 	
 	/**

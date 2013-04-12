@@ -40,10 +40,10 @@ public class WebBuilderParam {
 		this.inputRoot = inputRoot;
 		this.outputRoot = outputRoot;
 		this.inputFile = inputFile;
-		this.outputFile = new File(inputFile
-				.getAbsolutePath()
-				.replace(inputRoot.getAbsolutePath(),
-						outputRoot.getAbsolutePath()).replace(".md", ".html"));
+		this.outputFile = new File(inputFile.getAbsolutePath()
+				.replace(inputRoot.getAbsolutePath(), outputRoot.getAbsolutePath())
+				.replace(".md", ".html")
+				.replaceAll("@[^\\.]+", ""));
 	}
 
 	/**
