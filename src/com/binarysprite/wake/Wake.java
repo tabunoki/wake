@@ -1,7 +1,13 @@
 package com.binarysprite.wake;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -37,6 +43,12 @@ public class Wake {
 	 */
 	@Option(name="-o", usage="output directory", metaVar="OUTPUT", required=true)
     private File output = new File("./");
+	
+	/**
+	 * 表示確認用サーバーのポート番号です。
+	 */
+	@Option(name="-p", usage="server port", metaVar="PORT")
+	private int port = 8080;
 
 	/**
 	 * メインメソッドです。
@@ -94,6 +106,47 @@ public class Wake {
 			WebBuilderMode.LIST.handle(WebBuilder.DIRECTORY, new WebBuilderParam(input, output));
 		} else {
 			WebBuilderMode.BUILD.handle(WebBuilder.DIRECTORY, new WebBuilderParam(input, output));
+		}
+		
+		this.startServer();
+		this.startClient();
+	}
+	
+	/**
+	 * 
+	 */
+	public void startServer() {
+
+		Server server = new Server(port);
+
+		WebAppContext context = new WebAppContext();
+		context.setResourceBase(this.output.getAbsolutePath());
+		context.setContextPath("/");
+		context.setParentLoaderPriority(true);
+		server.setHandler(context);
+
+		try {
+			server.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void startClient() {
+		
+		Desktop desktop = Desktop.getDesktop();
+
+		try {
+			desktop.browse(new URI("http://localhost:" + port + "/"));
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
 		}
 	}
 }
