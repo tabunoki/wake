@@ -53,9 +53,15 @@ public class Wake {
 	@Option(name="-o", usage="output directory", metaVar="OUTPUT", required=true)
     private File output = new File("./");
 	
+	/**
+	 * サーバーの起動フラグです。
+	 */
 	@Option(name="-s", usage="start localhost server")
 	private boolean startServer = false;
 	
+	/**
+	 * ブラウザの起動フラグです。
+	 */
 	@Option(name="-c", usage="start browser")
 	private boolean startClient = false;
 	
@@ -126,7 +132,6 @@ public class Wake {
 			
 			@Override
 			public void run() {
-				System.out.print("test");
 				WebBuilderMode.BUILD.handle(WebBuilder.DIRECTORY, new WebBuilderParam(input, output));
 			}
 		}, 1, 2, TimeUnit.SECONDS);
@@ -155,6 +160,10 @@ public class Wake {
 					
 					
 					File file = new File(output.getAbsoluteFile(), exchange.getRequestURI().getPath());
+					
+					if (file.isDirectory()) {
+						file = new File(file, "index.html");
+					}
 					
 					if (file.isFile()) {
 						exchange.sendResponseHeaders(200, 0);

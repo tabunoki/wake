@@ -33,35 +33,25 @@ public class WebBuilderParam {
 	 * コンストラクタです。
 	 * @param inputRoot
 	 * @param outputRoot
-	 * @param inputFile
 	 */
-	public WebBuilderParam(File inputRoot, File outputRoot, File inputFile) {
-		super();
-		this.inputRoot = inputRoot;
-		this.outputRoot = outputRoot;
-		this.inputFile = inputFile;
-		this.outputFile = new File(inputFile.getAbsolutePath()
-				.replace(inputRoot.getAbsolutePath(), outputRoot.getAbsolutePath())
-				.replace(".md", ".html")
-				.replaceAll("@[^\\.]+", ""));
+	public WebBuilderParam(File inputRoot, File outputRoot) {
+		this(inputRoot, outputRoot, inputRoot, outputRoot);
 	}
-
-	/**
-	 * コンストラクタです。
-	 * @param param
-	 * @param inputFile
-	 */
-	public WebBuilderParam(WebBuilderParam param, File inputFile) {
-		this(param.inputRoot, param.outputRoot, inputFile);
-	}
-
+	
 	/**
 	 * コンストラクタです。
 	 * @param inputRoot
 	 * @param outputRoot
+	 * @param inputFile
+	 * @param outputFile
 	 */
-	public WebBuilderParam(File inputRoot, File outputRoot) {
-		this(inputRoot, outputRoot, inputRoot);
+	public WebBuilderParam(File inputRoot, File outputRoot, File inputFile,
+			File outputFile) {
+		super();
+		this.inputRoot = inputRoot;
+		this.outputRoot = outputRoot;
+		this.inputFile = inputFile;
+		this.outputFile = outputFile;
 	}
 
 	@Override

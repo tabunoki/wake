@@ -64,6 +64,13 @@ public enum WebBuilder implements FileFilter {
 		public boolean accept(File pathname) {
 			return pathname.isDirectory();
 		}
+
+		@Override
+		public File getOutputFile(WebBuilderParam param, File inputFile) {
+			
+			return new File(inputFile.getAbsolutePath()
+					.replace(param.inputRoot.getAbsolutePath(), param.outputRoot.getAbsolutePath()));
+		}
 	},
 	
 	/**
@@ -144,6 +151,15 @@ public enum WebBuilder implements FileFilter {
 		public boolean accept(File pathname) {
 			return pathname.getName().endsWith(".md");
 		}
+
+		@Override
+		public File getOutputFile(WebBuilderParam param, File inputFile) {
+			
+			return new File(inputFile.getAbsolutePath()
+					.replace(param.inputRoot.getAbsolutePath(), param.outputRoot.getAbsolutePath())
+					.replace(".md", ".html")
+					.replaceAll("@[^\\.]+", ""));
+		}
 	},
 	
 	/**
@@ -187,6 +203,13 @@ public enum WebBuilder implements FileFilter {
 		@Override
 		public boolean accept(File pathname) {
 			return pathname.getName().endsWith(".tmpl.html");
+		}
+
+		@Override
+		public File getOutputFile(WebBuilderParam param, File inputFile) {
+			
+			return new File(inputFile.getAbsolutePath()
+					.replace(param.inputRoot.getAbsolutePath(), param.outputRoot.getAbsolutePath()));
 		}
 	},
 	
@@ -242,6 +265,13 @@ public enum WebBuilder implements FileFilter {
 		public boolean accept(File pathname) {
 			return !CONTENT_FILE.accept(pathname) && !TEMPLATE_FILE.accept(pathname) && !DIRECTORY.accept(pathname);
 		}
+
+		@Override
+		public File getOutputFile(WebBuilderParam param, File inputFile) {
+			
+			return new File(inputFile.getAbsolutePath()
+					.replace(param.inputRoot.getAbsolutePath(), param.outputRoot.getAbsolutePath()));
+		}
 	};
 	
 	/**
@@ -251,18 +281,26 @@ public enum WebBuilder implements FileFilter {
 	private static final Map<String, String> TEMPALTE_MAP = new HashMap<String, String>();
 	
 	/**
-	 * 一覧を表示します。
+	 * 一覧を表示するモードの実行メソッドです。
 	 * @param webBuilderMode
 	 * @param param
 	 */
 	public abstract void list(WebBuilderMode webBuilderMode, WebBuilderParam param);
 	
 	/**
-	 * HTMLファイルをビルドします。
+	 * HTMLファイルをビルドするモードの実行メソッドです。
 	 * @param webBuilderMode
 	 * @param param
 	 */
 	public abstract void build(WebBuilderMode webBuilderMode, WebBuilderParam param);
+	
+	/**
+	 * 
+	 * @param param
+	 * @param inputFile
+	 * @return
+	 */
+	public abstract File getOutputFile(WebBuilderParam param, File inputFile);
 
 	/**
 	 * 子ファイルをハンドルします。
@@ -279,22 +317,25 @@ public enum WebBuilder implements FileFilter {
 	protected void handleChild(WebBuilderMode webBuilderMode, WebBuilderParam param) {
 		
 		for (File file : param.inputFile.listFiles(TEMPLATE_FILE)) {
-			webBuilderMode.handle(TEMPLATE_FILE, new WebBuilderParam(param, file));
+			webBuilderMode.handle(TEMPLATE_FILE, new WebBuilderParam(
+					param.inputRoot, param.outputRoot, file, TEMPLATE_FILE.getOutputFile(param, file)));
 		}
 		
 		for (File file : param.inputFile.listFiles(CONTENT_FILE)) {
-			webBuilderMode.handle(CONTENT_FILE, new WebBuilderParam(param, file));
+			webBuilderMode.handle(CONTENT_FILE, new WebBuilderParam(
+					param.inputRoot, param.outputRoot, file, CONTENT_FILE.getOutputFile(param, file)));
 		}
 		
 		for (File file : param.inputFile.listFiles(RESOURCE_FILE)) {
-			webBuilderMode.handle(RESOURCE_FILE, new WebBuilderParam(param, file));
+			webBuilderMode.handle(RESOURCE_FILE, new WebBuilderParam(
+					param.inputRoot, param.outputRoot, file, RESOURCE_FILE.getOutputFile(param, file)));
 		}
 		
 		for (File file : param.inputFile.listFiles(DIRECTORY)) {
-			webBuilderMode.handle(DIRECTORY, new WebBuilderParam(param, file));
+			webBuilderMode.handle(DIRECTORY, new WebBuilderParam(
+					param.inputRoot, param.outputRoot, file, DIRECTORY.getOutputFile(param, file)));
 		}
 	}
-
 
 	/**
 	 * 指定のファイルを読み込み、文字列として返します。
@@ -308,7 +349,7 @@ public enum WebBuilder implements FileFilter {
 		
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "JISAutoDetect"));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), /*"JISAutoDetect"*/ "UTF-8"));
 			
 			String line = null;
 			while((line = reader.readLine()) != null){
