@@ -120,6 +120,11 @@ public class Wake {
 			return;
 		}
 		
+		if (input.exists() == false) {
+			System.err.println("input directory is not exists. (" + input.getAbsolutePath() + ")");
+			return;
+		}
+		
 		/*
 		 * 実処理
 		 */

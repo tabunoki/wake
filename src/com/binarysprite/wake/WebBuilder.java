@@ -120,7 +120,13 @@ public enum WebBuilder implements FileFilter {
 				/*
 				 * テンプレート指定がある場合は markdown してからバインドする
 				 */
-				contentString = TEMPALTE_MAP.get(fileNameElement[1]).replace("<wake:body>", processor.markdown(contentString));
+				String templateString = TEMPALTE_MAP.get(fileNameElement[1]);
+				
+				if (templateString == null || templateString.isEmpty()) {
+					System.err.println("template file (" + fileNameElement[1] + ") is not exists.");
+				} else {
+					contentString = TEMPALTE_MAP.get(fileNameElement[1]).replace("<wake:body>", processor.markdown(contentString));
+				}
 				
 				/*
 				 * 変数をバインド
