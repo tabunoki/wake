@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.petebevin.markdown.MarkdownProcessor;
+import org.pegdown.PegDownProcessor;
 
 /**
  * 
@@ -113,7 +113,7 @@ public enum WebBuilder implements FileFilter {
 			/*
 			 * Markdown 変換と、バインド
 			 */
-			MarkdownProcessor processor = new MarkdownProcessor();
+			PegDownProcessor processor = new PegDownProcessor();
 			
 			String[] fileNameElement = param.inputFile.getName().split("[@|.]");
 			if (fileNameElement.length == 3) {
@@ -125,7 +125,7 @@ public enum WebBuilder implements FileFilter {
 				if (templateString == null || templateString.isEmpty()) {
 					System.err.println("template file (" + fileNameElement[1] + ") is not exists.");
 				} else {
-					contentString = TEMPALTE_MAP.get(fileNameElement[1]).replace("<wake:body>", processor.markdown(contentString));
+					contentString = TEMPALTE_MAP.get(fileNameElement[1]).replace("<wake:body>", processor.markdownToHtml(contentString));
 				}
 				
 				/*
@@ -139,7 +139,7 @@ public enum WebBuilder implements FileFilter {
 				/*
 				 * テンプレート指定がない場合は markdown のみ
 				 */
-				contentString = processor.markdown(contentString);
+				contentString = processor.markdownToHtml(contentString);
 			}
 			
 			/*
