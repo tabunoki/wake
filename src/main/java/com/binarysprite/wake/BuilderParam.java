@@ -7,7 +7,7 @@ import java.io.File;
  * @author Tabunoki
  *
  */
-public class WebBuilderParam {
+public class BuilderParam {
 
 	/**
 	 * 入力ディレクトリのルートです。
@@ -34,24 +34,29 @@ public class WebBuilderParam {
 	 * @param inputRoot
 	 * @param outputRoot
 	 */
-	public WebBuilderParam(File inputRoot, File outputRoot) {
-		this(inputRoot, outputRoot, inputRoot, outputRoot);
+	public BuilderParam(File inputRoot, File outputRoot) {
+
+		this.inputRoot = inputRoot;
+		this.outputRoot = outputRoot;
+		this.inputFile = inputRoot;
+		this.outputFile = outputRoot;
 	}
-	
+
 	/**
 	 * コンストラクタです。
 	 * @param inputRoot
 	 * @param outputRoot
 	 * @param inputFile
-	 * @param outputFile
 	 */
-	public WebBuilderParam(File inputRoot, File outputRoot, File inputFile,
-			File outputFile) {
-		super();
+	public BuilderParam(File inputRoot, File outputRoot, File inputFile) {
+
 		this.inputRoot = inputRoot;
 		this.outputRoot = outputRoot;
 		this.inputFile = inputFile;
-		this.outputFile = outputFile;
+		this.outputFile = new File(inputFile.getAbsolutePath()
+				.replace(inputRoot.getAbsolutePath(), outputRoot.getAbsolutePath())
+				.replace(".md", ".html")
+				.replaceAll("@[^@|^.]*", ""));
 	}
 
 	@Override
